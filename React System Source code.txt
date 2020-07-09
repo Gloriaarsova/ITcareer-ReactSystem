@@ -1,0 +1,83 @@
+#include<LiquidCrystal.h>
+LiquidCrystal lcd(13,12,8,7,6,5);
+
+int Contrast=100;
+
+const int redRGB = 2;
+const int greenRGB = 3;
+const int blueRGB = 4;
+const int lovebutton = 9;
+const int likebutton = 10;
+const int laughbutton = 11;
+
+int counterLove = 0;
+int counterLike = 0;
+int counterLaugh = 0;
+
+void setup()
+{
+  int total=0;
+  total=counterLove+counterLike+counterLaugh;
+  
+  analogWrite(A5,Contrast);
+  lcd.begin(16,2);
+  lcd.setCursor(0,0);
+  lcd.print("Total:");
+  lcd.setCursor(0,1);
+  lcd.print(total);
+  
+  pinMode(lovebutton,INPUT_PULLUP);
+  pinMode(likebutton,INPUT_PULLUP);
+  pinMode(laughbutton,INPUT_PULLUP);
+  pinMode(redRGB,OUTPUT);
+  pinMode(greenRGB,OUTPUT);
+  pinMode(blueRGB,OUTPUT);
+  Serial.begin(9600);
+}
+
+void loop()
+{ 
+  int sensorRed = digitalRead(lovebutton);
+  int sensorGreen = digitalRead(likebutton);
+  int sensorBlue = digitalRead(laughbutton);
+  
+  if(sensorRed==HIGH){
+  digitalWrite(redRGB,LOW);
+  } else {
+  digitalWrite(redRGB,HIGH);
+  Serial.println("voted: Love");
+  counterLove+=1;
+  Serial.print("Love Votes: ");
+  Serial.println(counterLove);
+  } 
+  
+  if(sensorGreen==HIGH){
+  digitalWrite(greenRGB,LOW);
+  } else {
+  digitalWrite(greenRGB,HIGH);
+  Serial.println("voted: Like");
+  counterLike+=1;
+  Serial.print("Like Votes: ");
+  Serial.println(counterLike);
+  } 
+  
+  if(sensorBlue==HIGH){
+  digitalWrite(blueRGB,LOW);
+  } else {
+  digitalWrite(blueRGB,HIGH);
+  Serial.println("voted: Laugh");
+  counterLaugh+=1;
+  Serial.print("Laugh Votes: ");
+  Serial.println(counterLaugh);
+  }
+  delay(100);
+  
+  int total=0;
+  total=counterLove+counterLike+counterLaugh;
+  
+  lcd.begin(16,2);
+  lcd.setCursor(0,0);
+  lcd.print("Total:");
+  lcd.setCursor(0,1);
+  lcd.print(total);
+}
